@@ -1,0 +1,51 @@
+default_stages:
+  - pre-commit
+  - pre-push
+
+fail_fast: true
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+        name: Trailing Whitespaces
+        stages: [ pre-commit ]
+      - id: mixed-line-ending
+        name: Mixed line ending
+        stages: [ pre-commit ]
+        args:
+          - --fix=lf
+      - id: end-of-file-fixer
+        name: End of File Fixer
+        stages: [ pre-commit ]
+  - repo: local
+    hooks:
+      - id: lint
+        name: Linting
+        stages: [ pre-commit ]
+        entry: npm run lint
+        language: system
+        verbose: true
+        require_serial: true
+      - id: type-check
+        name: Type Check
+        stages: [ pre-commit ]
+        entry: npm run type-check
+        language: system
+        verbose: true
+        require_serial: true
+      - id: detect-secrets
+        name: Detect Secrets
+        stages: [ pre-commit ]
+        entry: ./scripts/detect-secrets.sh
+        language: system
+        verbose: true
+        require_serial: true
+      - id: test-and-coverage
+        name: Tests and Coverage
+        stages: [ pre-push ]
+        entry: npm run test:cov
+        language: system
+        verbose: true
+        require_serial: true
